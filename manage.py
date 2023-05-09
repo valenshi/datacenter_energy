@@ -33,12 +33,16 @@ class HiddenPrints:
 
 
 def start_service(service):
+    hidden = HiddenPrints()
+    
     # 禁用 print
+    hidden.close()
     status = status_service(service)
     # 启用 pint
+    hidden.open()
 
     if status:
-        print(service + "is already running !")
+        print(service + " is already running !")
         return
     
     if service == 'dataprobe':
