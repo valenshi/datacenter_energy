@@ -1,19 +1,29 @@
 # -*- coding: UTF-8 -*-
 import subprocess
 import xmlrpc.client
-import csv
 import threading
+import datetime
 from time import sleep
 import my_tool
 # 指定 RPC 服务器的地址和端口号
 nodes = my_tool.get_nodes_ip()
 vms = my_tool.get_vms()
 
+interval = 5 # 每次采集的间隔时间
+
+# 连接数据库
 db = my_tool.MySQLTool(host='node1',username='ecm',password='123456',database='ecm')
 result = db.select(table_name='nodedata',columns=['*'])
 
-#print(result)
-
+# 获取时间戳
+# 获取当前时间
+def getData():
+    now = datetime.datetime.now()
+    # 将时间转换为时间戳
+    timestamp = now.timestamp()
+    # 将时间戳转换为指定格式的时间
+    time_str = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+    return time_str
 
 def collectHost(ip, hostname):
     try:
@@ -28,7 +38,7 @@ def collectHost(ip, hostname):
         return
     
     # 将数据插入到数据库中
-    data = {'node_name': result[0], 'timestamp': result[1], 'cpu_load': result[2], 'memory_load':result[3], 'power':result[4]}
+    data = {'node_name': result[0], 'timestamp': getData(), 'cpu_load': result[2], 'memory_load':result[3], 'power':result[4]}
     db.insert(table_name='nodedata', data=data)
    
 def collectPod(ip, name):
@@ -46,7 +56,7 @@ def collectPod(ip, name):
         if(len(result) < 6):
             continue
         # 将数据插入到数据库中
-        data = {'timestamp': result[0],'pod_name': result[1] , 'node_name': result[2],'pod_ip':result[3], 'cpu_load': result[4], 'memory_load':result[5]}
+        data = {'timestamp': getData(),'pod_name': result[1] , 'node_name': result[2],'pod_ip':result[3], 'cpu_load': result[4], 'memory_load':result[5]}
         #print(data)
         db.insert(table_name='poddata', data=data)
    
@@ -71,7 +81,7 @@ def collectVM(ip, name):
         return
 
     #插入数据库中
-    data = {'vm_name': result[0], 'vm_id': result[1], 'vm_ip': result[2], 'node_name': result[3], 'timestamp': result[-3], 'cpu_load': result[-2], 'memory_load': result[-1]}
+    data = {'vm_name': result[0], 'vm_id': result[1], 'vm_ip': result[2], 'node_name': result[3], 'timestamp': getData(), 'cpu_load': result[-2], 'memory_load': result[-1]}
     db.insert(table_name='vmdata', data=data)
 
 def collectPower():
@@ -79,18 +89,18 @@ def collectPower():
 
 def th_collectHost():
     while True:
-        sleep(1)
+        sleep(interval)
         for node in nodes:
             collectHost(node[1], node[0])
 
 def th_collectVM():
     while True:
-        sleep(1)
+        sleep(interval)
         for vm in vms:
             collectVM(vm[1], vm[0])
 def th_collectPod():
     while True:
-        sleep(1)
+        sleep(interval)
         collectPod("192.168.1.202", "node2")
 
 # 创建三个线程，分别循环执行三个函数
