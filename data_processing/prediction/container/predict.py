@@ -11,7 +11,7 @@ def predict_lasso(a, b, c):
     X_test = np.array([[x1, x2, x3, x4, x5, x6]])
 
     # 加载预训练好的Lasso模型
-    lasso = joblib.load('/root/datacenter_energy/data_collection/ipmi/lasso_model.pkl')
+    lasso = joblib.load('lasso_model.pkl')
 
     # 预测输出
     y_pred = lasso.predict(X_test)
