@@ -13,6 +13,7 @@ dc_ipmis = {t[0]:t[1] for t in ipmis}
 interval = 1 # 每次采集的间隔时间
 
 
+
 # 连接数据库
 db = my_tool.MySQLTool(host='node1',username='ecm',password='123456',database='ecm')
 result = db.select(table_name='nodedata',columns=['*'])
