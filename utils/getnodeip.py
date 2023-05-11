@@ -1,7 +1,21 @@
 # -*- coding: UTF-8 -*-
 import configparser
 import socket
-conf_url = "/root/datacenter_energy/config/dataserv.conf"
+import os
+conf_url = os.path.expanduser("~/datacenter_energy/config/dataserv.conf")
+def get_ipmis():
+
+    try:
+        # 读取 dataserv.conf 文件
+        conf = configparser.ConfigParser()
+        conf.read(conf_url)
+
+        # 获取 [hosts] 部分的列表项
+        ipmis = conf.items('ipmi')
+        return ipmis
+
+    except:
+        print("Error: Failed to load dataserv.conf file")
 def get_vms():
     #让gpt写
     """
@@ -49,7 +63,6 @@ def get_nodes_ip():
     """
     获取所有节点及其对应的IP地址
     """
-
     try:
         # 读取 dataserv.conf 文件
         conf = configparser.ConfigParser()
@@ -64,5 +77,5 @@ def get_nodes_ip():
 
 # 测试函数
 # nodes_ip = get_nodes_ip()
-# for node, ip in nodes_ip:
-#     print(node, ip)
+#for node, ip in nodes_ip:
+#    print(node, ip)

@@ -4,7 +4,8 @@
 import psutil
 import os
 import sys
-
+user_dir = os.path.expanduser('~')
+hostname = os.uname()[1]
 class HiddenPrints:
     def __init__(self, activated=True):
         # activated参数表示当前修饰类是否被激活
@@ -46,30 +47,30 @@ def start_service(service):
         return
     
     if service == 'dataprobe':
-        os.system('nohup python data_collection/dataservd/dataserv.py >data_collection/logs/dataserv.log 2>&1 & echo $! > .pid')
+        os.system('nohup python data_collection/dataservd/dataserv.py >data_collection/logs/dataserv.log 2>&1 & echo $! > pid/'+hostname+ '.pid')
         print('Data probe service started.')
     elif service == 'collector':
-        os.system('nohup python data_collection/dataservd/datacollector.py >data_collection/logs/datacollector.log 2>&1 & echo $! > .pid2')
+        os.system('nohup python data_collection/dataservd/datacollector.py >data_collection/logs/datacollector.log 2>&1 & echo $! > pid/'+hostname+ '.pid2')
         print('Data collector service started.')
     else:
         print('Invalid service specified.')
 
 def stop_service(service):
     if service == 'dataprobe':
-        if os.path.exists('./.pid'):
-            with open('./.pid', 'r') as f:
+        if os.path.exists('pid/'+hostname+'.pid'):
+            with open('pid/'+hostname+'.pid', 'r') as f:
                 pid = f.read().strip()
             os.system(f'kill {pid}')
-            os.remove('./.pid')
+            os.remove('pid/'+hostname+'.pid')
             print('Data probe service stopped.')
         else:
             print('Data probe service is not running.')
     elif service == 'collector':
-        if os.path.exists('./.pid2'):
-            with open('./.pid2', 'r') as f:
+        if os.path.exists('pid/'+hostname+'.pid2'):
+            with open('pid/'+hostname+'.pid2', 'r') as f:
                 pid = f.read().strip()
             os.system(f'kill {pid}')
-            os.remove('./.pid2')
+            os.remove('pid/'+hostname+'.pid2')
             print('Data collector service stopped.')
         else:
             print('Data collector service is not running.')
@@ -85,8 +86,8 @@ def restart_service(service):
 def status_service(service):
     ret = False
     if service == 'dataprobe':
-        if os.path.exists('./.pid'):
-            pid_file = open('./.pid', 'r')
+        if os.path.exists('pid/'+hostname+'.pid'):
+            pid_file = open('pid/'+hostname+'.pid', 'r')
             pid = int(pid_file.read())
             pid_file.close()
             process_running = psutil.pid_exists(pid)
@@ -97,11 +98,11 @@ def status_service(service):
                 print('Data probe service is not running.\n\n')
         else:
             print('Data probe service is not running.\n\n')
-        os.system("tail -n 10 /root/datacenter_energy/data_collection/logs/dataserv.log")
-        print("\n \nFor more information: /root/datacenter_energy/data_collection/logs/ \n")    
+        os.system("tail -n 10 data_collection/logs/dataserv.log")
+        print("\n \nFor more information: ~/datacenter_energy/data_collection/logs/ \n")    
     elif service == 'collector':
-        if os.path.exists('./.pid2'):
-            pid_file = open('./.pid2', 'r')
+        if os.path.exists('pid/'+hostname+'.pid2'):
+            pid_file = open('pid/'+hostname+'.pid2', 'r')
             pid = int(pid_file.read())
             pid_file.close()
             process_running = psutil.pid_exists(pid)
@@ -112,15 +113,15 @@ def status_service(service):
                 print('Data collector service is not running.\n\n')
         else:
             print('Data collector service is not running.\n\n')
-        os.system("tail -n 10 /root/datacenter_energy/data_collection/logs/datacollector.log")
-        print("\n \nFor more information: /root/datacenter_energy/data_collection/logs/ \n")
+        os.system("tail -n 10 data_collection/logs/datacollector.log")
+        print("\n \nFor more information: ~/datacenter_energy/data_collection/logs/ \n")
     else:
         print('Invalid service specified.')
     
     return ret
 
 def check_heartbeat():
-    os.system('python /root/datacenter_energy/data_collection/dataservd/heartbeat_checker.py')
+    os.system('python data_collection/dataservd/heartbeat_checker.py')
 
 if __name__ == '__main__':
 

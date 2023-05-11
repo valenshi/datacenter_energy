@@ -7,7 +7,7 @@ import time
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../utils'))
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../utils/database'))
 # 导入 my_tool 模块
-from getnodeip import get_nodes_ip,get_host_ip,get_vms
+from getnodeip import get_nodes_ip,get_host_ip,get_vms,get_ipmis
 
 from mysqltool import MySQLTool
 
