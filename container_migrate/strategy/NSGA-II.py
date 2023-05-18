@@ -1,7 +1,8 @@
+# -*- coding: UTF-8 -*-
+
 import random
 import numpy as np
 from deap import base, creator, tools, algorithms
-
 # 定义容器集合
 D = [(dict(CPU=1, RAM=2, DISK=100), dict(CPU=0.8, RAM=1.8, DISK=80)),
      (dict(CPU=1, RAM=2, DISK=100), dict(CPU=0.8, RAM=1.8, DISK=80)),
@@ -37,7 +38,7 @@ def dist(src, dst):
     return 10 * np.linalg.norm(np.subtract(src.values(), dst.values()))
 
 # 定义适应度函数
-creator.create("FitnessMin", base.Fitness, weights=(-1, -1, -1))
+creator.create("FitnessMin", base.Fitness, weights=(-1.0, -1.0, -1.0))
 creator.create("Individual", list, fitness=creator.FitnessMin)
 
 # 初始化DEAP Toolbox
