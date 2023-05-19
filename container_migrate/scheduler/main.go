@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
-	"time"
-
 	"sample-scheduler-framework/pkg/plugins"
+	"time"
 
 	"k8s.io/component-base/logs"
 	"k8s.io/kubernetes/cmd/kube-scheduler/app"

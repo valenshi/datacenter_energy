@@ -3,6 +3,7 @@ module sample-scheduler-framework
 go 1.13
 
 require (
+	golang.org/x/text v0.3.3 // indirect
 	k8s.io/api v0.18.8
 	k8s.io/apimachinery v0.18.8
 	k8s.io/apiserver v0.18.8 // indirect

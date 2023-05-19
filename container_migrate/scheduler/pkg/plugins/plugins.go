@@ -44,8 +44,6 @@ func New(configuration *runtime.Unknown, f framework.FrameworkHandle) (framework
 }
 
 func (s *Sample) Score(ctx context.Context, state *framework.CycleState, p *v1.Pod, nodeName string) (int64, *framework.Status) {
-	// node, err := state.ReadyNodes.StatusOfNode(nodeName)
-	// node, err := framework.GetNodeInfo(state, nodeName)
 	klog.V(3).Infof("enter Score()!!!")
 	node, err := s.handle.SnapshotSharedLister().NodeInfos().Get(nodeName)
 	if err != nil {
@@ -55,26 +53,10 @@ func (s *Sample) Score(ctx context.Context, state *framework.CycleState, p *v1.P
 	}
 	klog.V(3).Infof("node: %v", node)
 
-	// 获取节点的所有可用资源的占用率
-	// cpuAllocatable := node.AllocatableResource().MilliCPU
-	// memoryAllocatable := node.AllocatableResource().Memory
-
-	// 获取Pod请求的资源量
-	cpuRequested := int64(0)
-	memoryRequested := int64(0)
-	for _, container := range p.Spec.Containers {
-		cpuRequested += container.Resources.Requests.Cpu().MilliValue()
-		memoryRequested += container.Resources.Requests.Memory().Value()
-	}
-	// 计算节点上现有Pod的占用率
-	// currentCPU, currentMemory := node.ResourceCapacity()
-	// currentCPURequest, currentMemoryRequest := node.ResourceRequest()
-	// cpuPercentage := calculateUtilizationPercentage(currentCPU, currentCPURequest, cpuAllocatable)
-	// memoryPercentage := calculateUtilizationPercentage(currentMemory, currentMemoryRequest, memoryAllocatable)
-
 	// 计算ECM指标的得分
-	ecmScore := predictECM(nodeName)
-
+	ecmScore := gethostPower(nodeName)
+	klog.V(3).Infof(nodeName+"power is :%v", ecmScore)
+	klog.V(3).Infof("exit Score()!!!")
 	return ecmScore, framework.NewStatus(framework.Success, "")
 }
 
@@ -87,13 +69,30 @@ func (s *Sample) Score(ctx context.Context, state *framework.CycleState, p *v1.P
 // 	return value
 // }
 
-// 预测节点的ECM指标的得分
-func predictECM(nodeName string) int64 {
-	klog.V(3).Infof("enter predictECM()!!!")
-	// 在这里，你可以使用自己的算法来计算节点每个名称的ECM指标的得分，这里只是一个简单的例子
-	// ecmScore := cpuPercentage / memoryPercentage
-	ecmScore := int64(1)
-	return ecmScore
+func gethostPower(name string) int64 {
+	// var out bytes.Buffer
+	// var stderr bytes.Buffer
+
+	// cmd := exec.Command("python", "getpower.py", name)
+	// cmd.Stdout = &out
+	// cmd.Stderr = &stderr
+
+	// err := cmd.Run()
+	// if err != nil {
+	// 	return -1
+	// }
+	// // fmt.Println("%q", out.String())
+	// num, err := strconv.ParseInt(strings.TrimSpace(out.String()), 10, 64)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return -1
+	// }
+	if name == "node1" {
+		return 3
+	} else if name == "node2" {
+		return 2
+	}
+	return 1
 }
 
 func (s *Sample) ScoreExtensions() framework.ScoreExtensions {

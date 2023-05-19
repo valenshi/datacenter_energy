@@ -159,13 +159,7 @@ data:
       lockObjectName: sample-scheduler
       lockObjectNamespace: kube-system
     plugins:
-      preFilter:
-        enabled:
-        - name: "sample-plugin"
-      filter:
-        enabled:
-        - name: "sample-plugin"
-      preBind:
+      score:
         enabled:
         - name: "sample-plugin"
     pluginConfig:
@@ -200,7 +194,7 @@ spec:
             name: scheduler-config
       containers:
         - name: scheduler-ctrl
-          image: my-scheduler-framework-demo/sample-scheduler:4.0
+          image: 192.168.1.201:5002/scheduler:3
           imagePullPolicy: IfNotPresent
           args:
             - sample-scheduler-framework
