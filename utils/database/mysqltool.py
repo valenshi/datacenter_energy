@@ -34,7 +34,7 @@ class MySQLTool:
             print(f"Ping failed! Reconnecting due to {e}")
             self.connect()
 
-    def select(self, table_name, columns=None, where=None, order_by=None):
+    def select(self, table_name, columns=None, where=None, order_by=None, limit=None):
         self.ping()
         try:
             with self.connection.cursor() as cursor:
@@ -43,6 +43,8 @@ class MySQLTool:
                     sql += f" WHERE {where}"
                 if order_by:
                     sql += f" ORDER BY {order_by}"
+                if limit:
+                    sql += f" LIMIT {limit}"
                 cursor.execute(sql)
                 result = cursor.fetchall()
                 return result

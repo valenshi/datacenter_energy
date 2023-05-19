@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "data_processing/prediction/api.py", line 23, in <module>
+    server = SimpleXMLRPCServer((my_tool.get_host_ip(), 9926))
+  File "/root/miniconda3/envs/python3.7/lib/python3.7/xmlrpc/server.py", line 605, in __init__
+    socketserver.TCPServer.__init__(self, addr, requestHandler, bind_and_activate)
+  File "/root/miniconda3/envs/python3.7/lib/python3.7/socketserver.py", line 452, in __init__
+    self.server_bind()
+  File "/root/miniconda3/envs/python3.7/lib/python3.7/socketserver.py", line 466, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use

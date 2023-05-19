@@ -52,6 +52,9 @@ def start_service(service):
     elif service == 'collector':
         os.system('nohup python data_collection/dataservd/datacollector.py >data_collection/logs/datacollector.log 2>&1 & echo $! > pid/'+hostname+ '.pid2')
         print('Data collector service started.')
+    elif service == 'api':
+        os.system('nohup python data_processing/prediction/api.py >logs/api.log 2>&1 & echo $! > pid/'+hostname+ '.pid3')
+        print('API service started.')
     else:
         print('Invalid service specified.')
 
@@ -74,6 +77,15 @@ def stop_service(service):
             print('Data collector service stopped.')
         else:
             print('Data collector service is not running.')
+    elif service == 'api':
+        if os.path.exists('pid/'+hostname+'.pid3'):
+            with open('pid/'+hostname+'.pid3', 'r') as f:
+                pid = f.read().strip()
+            os.system(f'kill {pid}')
+            os.remove('pid/'+hostname+'.pid3')
+            print('api service stopped.')
+        else:
+            print('api service is not running.')
     else:
         print('Invalid service specified.')
 
@@ -115,6 +127,21 @@ def status_service(service):
             print('Data collector service is not running.\n\n')
         os.system("tail -n 10 data_collection/logs/datacollector.log")
         print("\n \nFor more information: ~/datacenter_energy/data_collection/logs/ \n")
+    elif service == 'api':
+        if os.path.exists('pid/'+hostname+'.pid3'):
+            pid_file = open('pid/'+hostname+'.pid3', 'r')
+            pid = int(pid_file.read())
+            pid_file.close()
+            process_running = psutil.pid_exists(pid)
+            if process_running:
+                print('api service is running.\n\n')
+                ret = True
+            else:
+                print('api service is not running.\n\n')
+        else:
+            print('api service is not running.\n\n')
+        os.system("tail -n 10 logs/api.log")
+        print("\n \nFor more information: ~/datacenter_energy/api/logs/ \n")
     else:
         print('Invalid service specified.')
     

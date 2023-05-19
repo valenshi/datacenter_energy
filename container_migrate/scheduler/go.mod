@@ -8,7 +8,7 @@ require (
 	k8s.io/apiserver v0.18.8 // indirect
 	k8s.io/component-base v0.0.0
 	k8s.io/klog v1.0.0
-	k8s.io/kube-openapi v0.0.0-20200410145947-61e04a5be9a6 // indirect
+	// k8s.io/kube-openapi v0.0.0-20200410145947-61e04a5be9a6 // indirect
 	k8s.io/kubernetes v1.27.2
 )
 
