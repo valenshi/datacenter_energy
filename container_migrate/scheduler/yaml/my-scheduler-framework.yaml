@@ -162,6 +162,8 @@ data:
       score:
         enabled:
         - name: "sample-plugin"
+        disabled:
+        - name: '*'
     pluginConfig:
     - name: "sample-plugin"
       args:
@@ -194,7 +196,7 @@ spec:
             name: scheduler-config
       containers:
         - name: scheduler-ctrl
-          image: 192.168.1.201:5002/scheduler:3
+          image: 192.168.1.201:5002/sample-scheduler:4
           imagePullPolicy: IfNotPresent
           args:
             - sample-scheduler-framework
