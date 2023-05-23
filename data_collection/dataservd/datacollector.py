@@ -34,6 +34,7 @@ def collectHost(ip, hostname):
         server_url = "http://" + ip + ":9925/"
         proxy = xmlrpc.client.ServerProxy(server_url)
         result = proxy.hostcollector().split(',')
+        print(result)
         if(len(result) < 5):
             return
     except Exception as e:
@@ -115,8 +116,8 @@ def th_collectHost():
         sleep(interval)
         for node in nodes:
             # 写入到数据库还是本地csv文件
-            # collectHost(node[1], node[0])
-            collectHostCSV(node[1],node[0])
+            collectHost(node[1], node[0])
+            # collectHostCSV(node[1],node[0])
 
 def th_collectVM():
     while True:
