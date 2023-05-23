@@ -10,7 +10,7 @@ nodes = my_tool.get_nodes_ip()
 vms = my_tool.get_vms()
 ipmis = my_tool.get_ipmis()
 dc_ipmis = {t[0]:t[1] for t in ipmis}
-interval = 1 # 每次采集的间隔时间
+interval = 10 # 每次采集的间隔时间
 
 
 
@@ -136,5 +136,5 @@ thread3 = threading.Thread(target=th_collectPod)
 
 # 启动三个线程
 thread1.start()
-# thread2.start()
-# thread3.start()
+thread2.start()
+thread3.start()
