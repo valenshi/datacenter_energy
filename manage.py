@@ -47,10 +47,10 @@ def start_service(service):
         return
     
     if service == 'dataprobe':
-        os.system('nohup python data_collection/dataservd/dataserv.py >data_collection/logs/dataserv.log 2>&1 & echo $! > pid/'+hostname+ '.pid')
+        os.system('nohup python data_collection/dataservd/dataserv.py >logs/dataserv.log 2>&1 & echo $! > pid/'+hostname+ '.pid')
         print('Data probe service started.')
     elif service == 'collector':
-        os.system('nohup python data_collection/dataservd/datacollector.py >data_collection/logs/datacollector.log 2>&1 & echo $! > pid/'+hostname+ '.pid2')
+        os.system('nohup python data_collection/dataservd/datacollector.py >logs/datacollector.log 2>&1 & echo $! > pid/'+hostname+ '.pid2')
         print('Data collector service started.')
     elif service == 'api':
         os.system('nohup python data_processing/prediction/api.py >logs/api.log 2>&1 & echo $! > pid/'+hostname+ '.pid3')
@@ -110,8 +110,8 @@ def status_service(service):
                 print('Data probe service is not running.\n\n')
         else:
             print('Data probe service is not running.\n\n')
-        os.system("tail -n 10 data_collection/logs/dataserv.log")
-        print("\n \nFor more information: ~/datacenter_energy/data_collection/logs/ \n")    
+        os.system("tail -n 10 logs/dataserv.log")
+        print("\n \nFor more information: ~/datacenter_energy/logs/ \n")    
     elif service == 'collector':
         if os.path.exists('pid/'+hostname+'.pid2'):
             pid_file = open('pid/'+hostname+'.pid2', 'r')
@@ -125,8 +125,8 @@ def status_service(service):
                 print('Data collector service is not running.\n\n')
         else:
             print('Data collector service is not running.\n\n')
-        os.system("tail -n 10 data_collection/logs/datacollector.log")
-        print("\n \nFor more information: ~/datacenter_energy/data_collection/logs/ \n")
+        os.system("tail -n 10 logs/datacollector.log")
+        print("\n \nFor more information: ~/datacenter_energy/logs/ \n")
     elif service == 'api':
         if os.path.exists('pid/'+hostname+'.pid3'):
             pid_file = open('pid/'+hostname+'.pid3', 'r')
@@ -141,7 +141,7 @@ def status_service(service):
         else:
             print('api service is not running.\n\n')
         os.system("tail -n 10 logs/api.log")
-        print("\n \nFor more information: ~/datacenter_energy/api/logs/ \n")
+        print("\n \nFor more information: ~/datacenter_energy/logs/ \n")
     else:
         print('Invalid service specified.')
     

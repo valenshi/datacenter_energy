@@ -1,37 +1,55 @@
+# -*- coding: UTF-8 -*-
+#!/usr/bin/env python3
+import configparser
+import os
 import my_tool
-from jsonrpc import Server, jsonrpc_method
+from xmlrpc.server import SimpleXMLRPCServer
 
-import argparse
+# 连接数据库
+db = my_tool.MySQLTool(host='node1',username='ecm',password='123456',database='ecm')
+result = db.select(table_name='nodedata',columns=['*'])
+
+#读取配置文件
+conf_url = os.path.expanduser("~/datacenter_energy/config/dataserv.conf")
 
 class API:
-    """
-    API类实现了远程过程调用所需的方法
-    """
-
-    @jsonrpc_method(name='ping')
     def ping(self):
-        """
-        ping方法返回200字符串，用于测试RPC服务是否正在运行
-        """
         return "200"
-
-    @jsonrpc_method(name='hostPower')
-    def hostPower(self, nodeName:str):
-        """
-        host_power方法接受一个节点名称并返回该节点的功率值。
-        """
-        db = my_tool.MySQLTool(host='node1', username='ecm', password='123456', database='ecm')
+    def hostPower(self, nodeName):
+        # print("enter hostPower()!!!")
         result = db.select(table_name="nodedata", columns=["power"], where="node_name = '"+nodeName+"'", order_by="timestamp DESC", limit=1)
-        return result[0]['power']
+        # print("hostPower success!!!, power is ", result[0]['power'])
+        return str(result[0]['power'])
+    
+    def energyCost(self, nodeName):
+        try:
+            # 读取 dataserv.conf 文件
+            conf = configparser.ConfigParser()
+            conf.read(conf_url)
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--port', type=int, default=9926, help='port number for JSONRPC')
-    args = parser.parse_args()
+            # 获取 [energyCost] 部分的列表项
+            energy_cost = conf.items('energyCost')
+            dict_nodes = dict(energy_cost)
+            return dict_nodes.get(nodeName)
+        except:
+            return "Error: Failed to load dataserv.conf file"
+    
+    def powerLimit(self ,nodeName):
+        try:
+            # 读取 dataserv.conf 文件
+            conf = configparser.ConfigParser()
+            conf.read(conf_url)
 
-    #创建JSONRPC Server对象
-    server = Server()
-    server.register_instance(API())
+            # 获取 [powerLimit] 部分的列表项
+            power_limit = conf.items('powerLimit')
+            dict_nodes = dict(power_limit)
+            # print(dict_nodes)
+            return dict_nodes.get(nodeName)
+        except:
+            return "Error: Failed to load dataserv.conf file"
 
-    #启动JSONRPC服务
-    server.serve('0.0.0.0', args.port)
+# modify the ipaddr
+# print(my_tool.get_host_ip())
+server = SimpleXMLRPCServer((my_tool.get_host_ip(), 9926))
+server.register_instance(API())
+server.serve_forever()
