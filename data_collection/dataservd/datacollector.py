@@ -77,7 +77,7 @@ def collectPod(ip, name):
         if(len(result) < 6):
             continue
         # 将数据插入到数据库中
-        data = {'timestamp': getData(),'pod_name': result[1] , 'node_name': result[2],'pod_ip':result[3], 'cpu_load': result[4], 'memory_load':result[5]}
+        data = {'timestamp': getData(),'pod_name': result[1] , 'node_name': result[3],'pod_ip':result[2], 'cpu_load': result[4], 'memory_load':result[5]}
         #print(data)
         db.insert(table_name='poddata', data=data)
    

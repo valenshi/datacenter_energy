@@ -4,7 +4,10 @@ import configparser
 import os
 import my_tool
 from xmlrpc.server import SimpleXMLRPCServer
-
+import sys
+import pandas as pd
+import pickle
+path = "/root/datacenter_energy/data_processing/modeling/physical/"
 # 连接数据库
 db = my_tool.MySQLTool(host='node1',username='ecm',password='123456',database='ecm')
 result = db.select(table_name='nodedata',columns=['*'])
@@ -21,6 +24,19 @@ class API:
         # print("hostPower success!!!, power is ", result[0]['power'])
         return str(result[0]['power'])
     
+    def predictPower(self, cpu_load, mem_load):
+        # 预测物理主机在指定资源利用率下的功耗
+        # 加载决策树模型
+        print(cpu_load, mem_load)
+        X_predict = [[cpu_load, mem_load]]
+        with open(path+'decision_tree_model.pkl', 'rb') as file:
+            dt_model = pickle.load(file)
+
+        # 进行预测
+        y_predict = dt_model.predict(X_predict)
+        return str(y_predict[0])
+    
+
     def energyCost(self, nodeName):
         try:
             # 读取 dataserv.conf 文件
