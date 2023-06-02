@@ -98,7 +98,7 @@ class MySQLTool:
 
 if __name__ == '__main__':
     # 实例化 MySQL 工具类
-    db_tool = MySQLTool(host='192.168.1.201', username='ecm', password='123456', database='ecm')
+    db_tool = MySQLTool(host='10.168.1.201', username='ecm', password='123456', database='ecm')
 
     # 每隔 10 秒钟查询一次数据库
     while True:

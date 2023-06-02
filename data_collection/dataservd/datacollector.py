@@ -127,7 +127,7 @@ def th_collectVM():
 def th_collectPod():
     while True:
         sleep(interval)
-        collectPod("192.168.1.202", "node2")
+        collectPod("10.168.1.202", "node2")
 
 # 创建三个线程，分别循环执行三个函数
 thread1 = threading.Thread(target=th_collectHost)
